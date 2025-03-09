@@ -16,7 +16,7 @@ def main():
 def pubsub_write():
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(project_id, topic_name)
-    r = publisher.publish(topic_path, b'sensor')
+    r = publisher.publish(topic_path, b'sensor', key1='')
     return r.result()
 
 @app.route('/pubsub/push',methods=['POST'])
