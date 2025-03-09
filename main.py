@@ -5,7 +5,7 @@ from json import loads
 from base64 import b64decode
 from secret import project_id,topic_name
 
-base_url = 'https://project-test-452517.ew.r.appspot.com/'
+base_url = 'https://pcloudsmarthouse.ew.r.appspot.com/'
 app = Flask(__name__)
 
 @app.route('/',methods=['GET'])
@@ -24,7 +24,7 @@ def pubsub_push():
     print('ricevuto payload',flush=True)
     dict = loads(request.data.decode('utf-8')) # deserializzazione
     print(dict,flush=True)
-    msg = b64decode(dict['message']['sensor_data']).decode('utf-8')
+    msg = b64decode(dict['message']['data']).decode('utf-8')
     print(msg)
     return 'OK',200
 
