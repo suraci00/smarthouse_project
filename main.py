@@ -16,7 +16,7 @@ def main():
 def pubsub_write():
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(project_id, topic_name)
-    r = publisher.publish(topic_path, b'sensor', '')
+    r = publisher.publish(topic_path, b'sensor')
     return r.result()
 
 @app.route('/pubsub/push',methods=['POST'])
@@ -24,7 +24,7 @@ def pubsub_push():
     print('ricevuto payload',flush=True)
     dict = loads(request.data.decode('utf-8')) # deserializzazione
     print(dict,flush=True)
-    msg = b64decode(dict['message']['data']).decode('utf-8')
+    msg = b64decode(dict['message']['sensor_data']).decode('utf-8')
     print(msg)
     return 'OK',200
 
