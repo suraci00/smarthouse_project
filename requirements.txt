@@ -1,0 +1,4 @@
+
+flask~=3.1.0
+google-cloud-pubsub
+protobuf~=5.29.3
