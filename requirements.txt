@@ -1,4 +1,4 @@
 flask
 google-cloud-pubsub
-
+google-cloud-firestore
 protobuf
