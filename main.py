@@ -34,7 +34,7 @@ def pubsub_write():
         doc_ref.set({'sensors': [(data, val)]})
     return 'OK', 200'''
 
-@app.route('pubsub/push', methods=['POST'])
+@app.route('/pubsub/push', methods=['POST'])
 def pubsub_push():
     print('ricevuto payload',flush=True)
     dict = loads(request.data.decode('utf-8')) # deserializzazione
