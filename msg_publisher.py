@@ -3,6 +3,8 @@ from google.auth import jwt
 from google.cloud import pubsub_v1
 from time import sleep
 from secret import project_id, topic_name
+from datetime import datetime
+
 
 service_account_info = json.load(open("credentials.json"))
 audience = "https://pubsub.googleapis.com/google.pubsub.v1.Publisher"
@@ -19,12 +21,18 @@ except Exception as e:
     print(e)
 
 
-with open('data', 'r') as file:
-    for line in file:
-        message = line.strip()
-        if message:
-            data = json.dumps({"sensor_data": message})
-            publisher.publish(topic_path, data.encode('utf-8'))
-            print(f"Inviato: {message}")
-        sleep(5)
+with open('data', 'r') as f:
+    for l in f.readlines():
+        values = l.split()
+        date = f"{values[0]} {values[1]}"
+        if "." not in date:
+            date += ".000000"  # Aggiunge i microsecondi mancanti
+        #date = datetime.strptime(data_str, "%Y-%m-%d %H:%M:%S.%f")
+        s = values[2]
+        status = values[3]
+        print(date, s, status)
 
+        r = publisher.publish(topic_path, b'sensor', s = s, date = date, status = status)
+        sleep(2)
+
+print('done')
