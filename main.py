@@ -29,6 +29,7 @@ def add_data(): #spacchettamento messaggi
     date = dict['message']['attributes']['date']
     status = dict['message']['attributes']['status']
     store_data(s, date, status)
+    return 'OK', 200
 
 def store_data(s, date, status): #scrittura a db dei dati
     doc_ref = db.collection(coll).document(s)
@@ -38,7 +39,7 @@ def store_data(s, date, status): #scrittura a db dei dati
         doc_ref.update({'sensors': diz})
     else:
         doc_ref.set({'sensors': {date: status}})
-    return 'OK', 200
+
 
 @app.route('/sensors/<s>',methods=['GET'])
 def get_data(s):
