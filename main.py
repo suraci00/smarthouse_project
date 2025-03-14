@@ -22,7 +22,7 @@ def pubsub_write():
     r = publisher.publish(topic_path, b'sensor', key1='')
     return r.result()
 
-@app.route('/sensors/pubsub/', methods=['POST'])
+@app.route('/sensors/pubsub', methods=['POST'])
 def add_data(s): #spacchettamento messaggi
     dict = loads(request.data.decode('utf-8'))
     s = dict['message']['attributes']['s']
@@ -64,7 +64,7 @@ def pubsub_push():
 
 
 
-@app.route('/sensors/',methods=['GET'])
+@app.route('/sensors',methods=['GET'])
 def sensors():
     s = []
     for entity in db.collection(coll).stream():
