@@ -23,7 +23,7 @@ def pubsub_write():
     return r.result()
 
 @app.route('/sensors/pubsub', methods=['POST'])
-def add_data(s): #spacchettamento messaggi
+def add_data(): #spacchettamento messaggi
     dict = loads(request.data.decode('utf-8'))
     s = dict['message']['attributes']['s']
     date = dict['message']['attributes']['date']
