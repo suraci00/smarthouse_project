@@ -3,7 +3,7 @@ from google.auth import jwt
 from google.cloud import pubsub_v1
 from time import sleep
 from secret import project_id, topic_name
-from datetime import datetime
+
 
 
 service_account_info = json.load(open("credentials.json"))
