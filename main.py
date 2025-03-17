@@ -15,16 +15,17 @@ db = firestore.Client.from_service_account_json('credentials.json', database = d
 def main():
     return 'ok'
 
-@app.route('/pubsub/write',methods=['GET'])
+'''@app.route('/pubsub/write',methods=['GET'])
 def pubsub_write():
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(project_id, topic_name)
     r = publisher.publish(topic_path, b'sensor', key1='')
-    return r.result()
+    return r.result()'''
 
 @app.route('/sensors/pubsub', methods=['POST'])
 def add_data(): #spacchettamento messaggi
     dict = loads(request.data.decode('utf-8'))
+    print(dict)
     s = dict['message']['attributes']['s']
     date = dict['message']['attributes']['date']
     status = dict['message']['attributes']['status']
