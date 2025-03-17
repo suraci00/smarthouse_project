@@ -8,9 +8,12 @@ app = Flask(__name__)
 db = 'smarthouse'
 coll = 'sensors'
 db = firestore.Client.from_service_account_json('credentials.json', database = db)
+
+
 @app.route('/',methods=['GET'])
 def main():
     return 'ok'
+
 
 
 
@@ -18,9 +21,9 @@ def main():
 def add_data(): #spacchettamento messaggi
     dict = loads(request.data.decode('utf-8'))
     print(dict)
-    s = dict['message']['s']
-    date = dict['message']['date']
-    status = dict['message']['status']
+    s = dict['message']['attributes']['s']
+    date = dict['message']['attributes']['date']
+    status = dict['message']['attributes']['status']
     store_data(s, date, status)
     return 'OK', 200
 
@@ -32,6 +35,7 @@ def store_data(s, date, status): #scrittura a db dei dati
         doc_ref.update({'sensors': diz})
     else:
         doc_ref.set({'sensors': {date: status}})
+
 
 
 @app.route('/sensors/<s>',methods=['GET'])
@@ -55,6 +59,8 @@ def sensors():
     for entity in db.collection(coll).stream():
         s.append(entity.id)
     return dumps(s),200
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
