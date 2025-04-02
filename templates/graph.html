@@ -59,39 +59,33 @@
 
 					function drawBasic() {
 
-						var rawData = {{ data|safe }}; 
-						
-						console.log("Raw Data:", rawData); // Debug
-    
-						// Determino se i valori sono binari (ON/OFF o OPEN/CLOSE) o numerici
-						var isBinary = rawData.some(row => isNaN(row[1]) && row[1] !== null);
+						var rawData = {{data|safe}};
 
-						var processedData = rawData.map(row => [
-							row[0], 
-							isBinary 
-								? (row[1] === "ON" || row[1] === "OPEN" ? 1 : 0) // Converte ON/OPEN → 1 e OFF/CLOSE → 0
-								: parseFloat(row[1]) // Se è numerico, lo lascia invariato
-						]);
+						// Converto i valori binari
+						function convertValue(value) {
+							if (value === 'ON' || value === 'OPEN') return 1;
+							if (value === 'OFF' || value === 'CLOSE') return 0;
+							return parseFloat(value) || value;  // Mantiene i numeri invariati
+						}
 
-						
-						var data = google.visualization.arrayToDataTable([
-							  ['Date', 'Status'],
-							  {{data|safe}}
-						]);
-						console.log(data)
-						var view = new google.visualization.DataView(data);
-       					view.setColumns([0, 1]);
+						// Converte i dati
+						var formattedData = rawData.map(row => [row[0], convertValue(row[1])]);
+
+						var datav = google.visualization.arrayToDataTable([
+							['Date', 'Status']
+						].concat(formattedData));
 
 
 						var options = {
-							hAxis: {
-							  title: 'Date'
-							},
+							hAxis: { title: 'Date' },
 							vAxis: {
-							  title: 'Status'
+								title: 'Status',
+								ticks: [
+									{ v: 0, f: 'OFF/CLOSED' },
+									{ v: 1, f: 'ON/OPEN' }
+								] // I numeri rimarranno normali
 							}
 						};
-
 
 						var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
 
