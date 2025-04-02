@@ -42,26 +42,28 @@ def store_data(s, date, status): #scrittura a db dei dati
 def get_data(s):
     doc_ref = db.collection(coll).document(s)
     diz = doc_ref.get().to_dict()['sensors']
-    """if doc_ref.get().exists:
+    if doc_ref.get().exists:
         #return dumps(db['sensors'][s])
         r = []
         diz = doc_ref.get().to_dict()['sensors']
         for k, v in diz.items():
-            r.append([k, v])"""
-    r = []
-    for doc in db.collection(coll).where('s', '==', s).stream():
-        print(f'{doc.id} --> {doc.to_dict()}')
-        r.append([doc.to_dict()['date'], doc.to_dict()['status']])
+            r.append([k, v])
+        '''r = []
+        for doc in db.collection(coll).stream():
+            print(f'{doc.id} --> {doc.to_dict()}')
+            r.append([doc.to_dict()['date'], doc.to_dict()['status']])'''
+        return dumps(r)
     else:
         return 'sensor not found'
 
 @app.route('/graph/<s>',methods=['GET'])
 def graph(s):
+    print(s)
     d = loads(get_data(s))
     ds = ''
     for date, status in d:
         ds += f"['{date}',{status}],\n"
-    return render_template('graph.html', data = ds)
+    return render_template("graph.html", data = ds)
 
 @app.route('/sensors',methods=['GET'])
 def sensors():
