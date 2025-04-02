@@ -33,6 +33,6 @@ with open('data', 'r') as f:
         print(date, s, status)
 
         r = publisher.publish(topic_path, b'sensor', s = s, date = date, status = status)
-        sleep(2)
+        #sleep(2)
 
 print('done')

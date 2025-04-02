@@ -60,6 +60,8 @@
 					function drawBasic() {
 
 						var rawData = {{ data|safe }}; 
+						
+						console.log("Raw Data:", rawData); // Debug
     
 						// Determino se i valori sono binari (ON/OFF o OPEN/CLOSE) o numerici
 						var isBinary = rawData.some(row => isNaN(row[1]) && row[1] !== null);
