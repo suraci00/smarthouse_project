@@ -22,7 +22,7 @@
 				<!-- Header -->
 					<header id="header">
 						<h1>PCLOUDSMARTHOUSE</h1>
-						<p>Sensors map</p>
+						<p>Track Record</p>
 					</header>
 
 				<!-- Main -->
@@ -59,26 +59,36 @@
 
 					function drawBasic() {
 
-						  var datav = google.visualization.arrayToDataTable([
-						  ['Date','Status'],
-						  {{data|safe}}
-						  ]);
+						var rawData = {{ data|safe }}; 
+    
+						// Determino se i valori sono binari (ON/OFF o OPEN/CLOSE) o numerici
+						var isBinary = rawData.some(row => isNaN(row[1]) && row[1] !== null);
 
-						  console.log(datav)
-						  
+						var processedData = rawData.map(row => [
+							row[0], 
+							isBinary 
+								? (row[1] === "ON" || row[1] === "OPEN" ? 1 : 0) // Converte ON/OPEN → 1 e OFF/CLOSE → 0
+								: parseFloat(row[1]) // Se è numerico, lo lascia invariato
+						]);
 
-						  var options = {
-							hAxis: {
-							  title: 'Date'
-							},
-							vAxis: {
-							  title: 'Status'
-							}
-						  };
+						
+						var datav = new google.visualization.DataTable();
+						datav.addColumn('string', 'Date');
+						datav.addColumn('number', 'Value');
+						datav.addRows(processedData);
 
-						  var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+						var options = {
+							hAxis: { title: 'Date' },
+							vAxis: isBinary 
+								? { title: 'Status', minValue: 0, maxValue: 1, ticks: [0, 1] } 
+								: { title: 'Temp' }, 
+						};
 
-						  chart.draw(datav, options);
+
+
+						var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+						chart.draw(datav, options);
    					}
 
 
