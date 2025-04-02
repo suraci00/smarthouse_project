@@ -59,20 +59,13 @@
 
 					function drawBasic() {
 
-						  var data = google.visualization.arrayToDataTable([
+						  var datav = google.visualization.arrayToDataTable([
 						  ['Date','Status'],
 						  {{data|safe}}
 						  ]);
 
 						  console.log(datav)
-						  datav2 = []
-						  for(i=0; i<datav.length;i++)
-						  	if (i < datav.length - 10)
-						  		datav2.push([datav[i][0],datav[i][1],null])
-						  	else
-						  		datav2.push([datav[i][0],null,datav[i][1]])
-						  console.log(datav2)
-						  data.addRows(datav2);
+						  
 
 						  var options = {
 							hAxis: {
@@ -85,11 +78,11 @@
 
 						  var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
 
-						  chart.draw(data, options);
+						  chart.draw(datav, options);
    					}
 
 
-				})
+				
 
 			</script>
 
