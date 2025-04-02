@@ -42,7 +42,7 @@ def store_data(s, date, status): #scrittura a db dei dati
 def get_data(s):
     doc_ref = db.collection(coll).document(s)
     if doc_ref.get().exists:
-        return dumps(db[s])
+        return dumps(db['sensors'][s])
         '''r = []
         diz = doc_ref.get().to_dict()['sensors']
         for k, v in diz.items():
