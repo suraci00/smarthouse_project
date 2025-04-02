@@ -1,4 +1,4 @@
-from flask import Flask,request
+from flask import Flask, request, render_template
 from google.cloud import firestore
 from json import dumps, loads
 
@@ -42,16 +42,22 @@ def store_data(s, date, status): #scrittura a db dei dati
 def get_data(s):
     doc_ref = db.collection(coll).document(s)
     if doc_ref.get().exists:
-        # return json.dumps(db[s])
-        r = []
+        return dumps(db[s])
+        '''r = []
         diz = doc_ref.get().to_dict()['sensors']
         for k, v in diz.items():
             r.append([k, v])
-        return dumps(r),200
+        return dumps(r)'''
     else:
         return 'sensor not found',404
 
-
+@app.route('/graph/<s>',methods=['GET'])
+def graph(s):
+    d = loads(get_data(s))
+    ds = ''
+    for x in d:
+        ds += f"[{x[0]},{x[1]}],\n"
+    return render_template('graph.html', data = ds)
 
 @app.route('/sensors',methods=['GET'])
 def sensors():
