@@ -51,17 +51,16 @@ def get_data(s):
     r = []
     for doc in db.collection(coll).where('s', '==', s).stream():
         print(f'{doc.id} --> {doc.to_dict()}')
-        for k, v in diz.items():
-            r.append([k, v])
+        r.append([doc.to_dict()['date'], doc.to_dict()['status']])
     else:
-        return 'sensor not found',404
+        return 'sensor not found'
 
 @app.route('/graph/<s>',methods=['GET'])
 def graph(s):
     d = loads(get_data(s))
     ds = ''
-    for x in d:
-        ds += f"[{x[0]},{x[1]}],\n"
+    for date, status in d:
+        ds += f"['{date}',{status}],\n"
     return render_template('graph.html', data = ds)
 
 @app.route('/sensors',methods=['GET'])
