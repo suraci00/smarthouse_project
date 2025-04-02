@@ -60,7 +60,7 @@ def get_data(s):
 def graph(s):
     print(s)
     d = loads(get_data(s))
-    ds = "[\n" + ",\n".join(f"['{date}', {status}]" for date, status in d) + "\n]"
+    ds = "[\n" + ",\n".join(f"['{date}', '{status}']" for date, status in d) + "\n]"
     return render_template('graph.html', data = ds)
 
 @app.route('/map',methods=['GET'])

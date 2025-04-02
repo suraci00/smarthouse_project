@@ -63,8 +63,8 @@
 
 						// Converto i valori binari
 						function convertValue(value) {
-							if (value === ON || value === OPEN) return 1;
-							if (value === OFF || value === CLOSE) return 0;
+							if (value === 'ON' || value === 'OPEN') return 1;
+							if (value === 'OFF' || value === 'CLOSE') return 0;
 							return parseFloat(value) || value;  // Mantiene i numeri invariati
 						}
 
