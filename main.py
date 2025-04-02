@@ -41,13 +41,18 @@ def store_data(s, date, status): #scrittura a db dei dati
 @app.route('/sensors/<s>',methods=['GET'])
 def get_data(s):
     doc_ref = db.collection(coll).document(s)
-    if doc_ref.get().exists:
+    diz = doc_ref.get().to_dict()['sensors']
+    """if doc_ref.get().exists:
         #return dumps(db['sensors'][s])
         r = []
         diz = doc_ref.get().to_dict()['sensors']
         for k, v in diz.items():
+            r.append([k, v])"""
+    r = []
+    for doc in db.collection(coll).where('s', '==', s).stream():
+        print(f'{doc.id} --> {doc.to_dict()}')
+        for k, v in diz.items():
             r.append([k, v])
-        return dumps(r)
     else:
         return 'sensor not found',404
 
