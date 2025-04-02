@@ -74,18 +74,23 @@
 						]);
 
 						
-						var datav = new google.visualization.DataTable();
-						datav.addColumn('string', 'Date');
-						datav.addColumn('number', 'Value');
-						datav.addRows(processedData);
+						var data = google.visualization.arrayToDataTable([
+							  ['Date', 'Status'],
+							  {{data|safe}}
+						]);
+						console.log(data)
+						var view = new google.visualization.DataView(data);
+       					view.setColumns([0, 1]);
+
 
 						var options = {
-							hAxis: { title: 'Date' },
-							vAxis: isBinary 
-								? { title: 'Status', minValue: 0, maxValue: 1, ticks: [0, 1] } 
-								: { title: 'Temp' }, 
+							hAxis: {
+							  title: 'Date'
+							},
+							vAxis: {
+							  title: 'Status'
+							}
 						};
-
 
 
 						var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
