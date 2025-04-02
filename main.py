@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template
 from google.cloud import firestore
 from json import dumps, loads
-
+from datetime import datetime
 
 base_url = 'https://pcloudsmarthouse.ew.r.appspot.com/'
 app = Flask(__name__)
@@ -62,7 +62,7 @@ def graph(s):
     d = loads(get_data(s))
     ds = ''
     for date, status in d:
-        ds += f"[{date}, '{status}'],\n"
+        ds += f"[{datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")}, '{status}'],\n"
     return render_template('graph.html', data = ds)
 
 @app.route('/map',methods=['GET'])
