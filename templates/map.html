@@ -9,10 +9,10 @@
 		<title>PCloudSmarthouse Project</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}" />
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
 		<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<noscript><link rel="stylesheet" href="{{ url_for('static', filename='assets/css/noscript.css') }}" /></noscript>
 	</head>
 	<body class="is-preload">
 
@@ -32,7 +32,7 @@
 							<section id="mapid" style="width: 1227px; height: 1252px;">
 								<script>
 									 map = L.map('mapid').setView([51.505, -0.09], 13);
-									 L.imageOverlay('images/milan.png').addTo(map);
+									 L.imageOverlay("{{ url_for('static', filename='images/milan.png') }}").addTo(map);
 									 <!-- L.marker([51.5, -0.09]).addTo(map).bindPopup(Popup.<br> Easily customizable.') -->
 								</script>
 								<!-- <span class="image main"><img src="images/pic04.jpg" alt="" /></span> -->
@@ -48,13 +48,13 @@
 			</div>
 
 		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+			<script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='assets/js/jquery.scrollex.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='assets/js/jquery.scrolly.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='assets/js/browser.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='assets/js/breakpoints.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='assets/js/util.js') }}"></script>
+			<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
 
 	</body>
 </html>

@@ -65,6 +65,10 @@ def graph(s):
         ds += f"['{date}',{status}],\n"
     return render_template('graph.html', data = ds)
 
+@app.route('/map',methods=['GET'])
+def map():
+    return render_template('map.html')
+
 @app.route('/sensors',methods=['GET'])
 def sensors():
     s = []
