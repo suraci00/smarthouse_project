@@ -63,7 +63,7 @@ def graph(s):
     ds = ''
     for date, status in d:
         ds += f"['{date}',{status}],\n"
-    return render_template("graph.html", data = ds)
+    return render_template('graph.html', data = ds)
 
 @app.route('/sensors',methods=['GET'])
 def sensors():
