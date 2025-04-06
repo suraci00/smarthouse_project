@@ -30,7 +30,7 @@
 
 						<!-- Content -->
 							<section id="mapid">
-								<div id="chart_div" style="width: 600px; height: 400px;"></div>
+								<div id="chart_div" style="width: 100%; height: 500px;"></div>
 							</section>
 
 					</div>
@@ -67,7 +67,18 @@
 							if (value === 'OFF' || value === 'CLOSE') return 0;
 							return parseFloat(value) || value;  // Mantiene i numeri invariati
 						}
+						
+						// Funzione per rilevare se i valori sono binari
+						function isBinario(values) {
+						  const binONOFF = ['ON', 'OFF'];
+						  const binOPENCLOSE = ['OPEN', 'CLOSE'];
+						  return values.every(v => binONOFF.includes(v) || binOPENCLOSE.includes(v));
+						}
 
+						// Estrai valori sensore e verifica tipo
+						var valoriSensore = rawData.slice(1).map(row => row[1]);
+						var isSensorBinario = isBinario(valoriSensore);
+						
 						// Converte i dati
 						var formattedData = rawData.map(row => [row[0], convertValue(row[1])]);
 
@@ -75,21 +86,48 @@
 							['Date', 'Status']
 						].concat(formattedData));
 
-
+						var view = new google.visualization.DataView(datav);
+       					view.setColumns([0, 1]);
+						
 						var options = {
-							hAxis: { title: 'Date' },
+							hAxis: { 
+								title: 'Date', 
+								gridlines: { count: 10 }, // Aumenta la spaziatura tra i punti
+								slantedText: true, // Inclina le date per maggiore leggibilità
+								slantedTextAngle: 45, // Angolo delle etichette asse X
+								viewWindow: {max: 100 // Limita a 150 punti visibili
+								}
+							},
 							vAxis: {
-								title: 'Status',
-								ticks: [
-									{ v: 0, f: 'OFF/CLOSED' },
-									{ v: 1, f: 'ON/OPEN' }
-								] // I numeri rimarranno normali
-							}
+								title: 'Status'
+							},
+							pointSize: 1, // Dimensione punti più grande
+							explorer: { 
+								axis: 'horizontal', 
+								keepInBounds: true, 
+								maxZoomOut: 300, // scorrimento orizzontale
+								actions: ['drag','zoom']
+							},
+							
+							chartArea: {
+								width: '70%',
+								height: '80%'
+							},
+							
+							
 						};
+						
+						if (isSensorBinario) {
+						  const label = valoriSensore.includes('OPEN') ? ['CLOSE', 'OPEN'] : ['OFF', 'ON'];
+						  options.vAxis.ticks = [
+							{ v: 0, f: label[0] },
+							{ v: 1, f: label[1] }
+						  ];
+						}
 
 						var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
 
-						chart.draw(datav, options);
+						chart.draw(view, options);
    					}
 
 
