@@ -60,7 +60,7 @@ def get_data(s):
 def graph(s):
     print(s)
     d = loads(get_data(s))
-    ds = "[\n" + ",\n".join(f"['{date}', '{status}']" for date, status in d) + "\n]"
+    ds = "[\n" + ",\n".join(f"['{datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f').strftime('%Y-%m-%d %H:%M:%S')}', '{status}']" for date, status in d) + "\n]"
     return render_template('graph.html', data = ds)
 
 @app.route('/map',methods=['GET'])
@@ -70,11 +70,23 @@ def map():
 @app.route('/sensors',methods=['GET'])
 def sensors():
     s = []
+
     for entity in db.collection(coll).stream():
         s.append(entity.id)
     return dumps(s),200
 
 
+@app.route('/active',methods=['GET'])
+def active():
+    bs = {}
+
+    for entity in db.collection(coll).stream():
+        bs[entity.id] = []
+        doc_ref = db.collection(coll).document(entity.id)
+        diz = doc_ref.get().to_dict()['sensors']
+        for k, v in diz.items():
+            bs[entity.id].append([k, v])
+    return dumps(bs),200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
