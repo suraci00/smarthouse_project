@@ -32,11 +32,11 @@ def add_data(): #spacchettamento messaggi
 
 def store_data(s, date, status): #scrittura a db dei dati
     doc_ref = db.collection(coll).document(s)
-    if doc_ref.get().exists:
-        diz = doc_ref.get().to_dict()['sensors']
+    if not doc_ref.get().exists:
+        '''diz = doc_ref.get().to_dict()['sensors']
         diz[date] = status
         doc_ref.update({'sensors': diz})
-    else:
+    else:'''
         doc_ref.set({'sensors': {date: status}})
 
 
