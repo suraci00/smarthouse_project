@@ -3,4 +3,4 @@ google-cloud-pubsub
 google-cloud-firestore
 protobuf
 DateTime
-g
+python-dateutil

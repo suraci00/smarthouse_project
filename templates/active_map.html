@@ -29,54 +29,81 @@
 					<div id="main">
 
 						<!-- Content -->
-							<section id="map" style="width: 1227px; height: 1252px;">
+							<section id="mapid" style="width: 1227px; height: 1252px;">
 								<script>
 									const mapWidth = 1227;
 									const mapHeight = 1252;
 
-									const map = L.map('map', {
+									const mapid = L.map('mapid', {
 										crs: L.CRS.Simple,
 										minZoom: -1,
 										maxZoom: 2,
 									});
 
 									const bounds = [[0, 0], [mapHeight, mapWidth]];
-									const image = L.imageOverlay('static/images/milan.png', bounds).addTo(map);
-									map.fitBounds(bounds);
+									const image = L.imageOverlay('static/images/milan.png', bounds).addTo(mapid);
+									mapid.fitBounds(bounds);
 
-									// Salvataggio dei punti
-									const markers = [];
+                                    // colorazione sensori
+                                    async function loadMarkers() {
+										const resMarkers = await fetch('/static/data/markers.json');
+										const markers = await resMarkers.json();
 
-									map.on('click', function(e) {
-										const id = prompt("Inserisci l'ID del sensore:");
-										if (!id) return;
+										const resActive = await fetch('/active');
+										const active = await resActive.json();
 
-										const marker = L.marker(e.latlng).addTo(map).bindPopup(`${id}<br>Coords: ${e.latlng.lat.toFixed(0)}, ${e.latlng.lng.toFixed(0)}`).openPopup();
-										markers.push({
-										  id: id,
-										  x: Math.round(e.latlng.lng),
-										  y: Math.round(e.latlng.lat)
+										markers.forEach(marker => {
+											const id = marker.id;
+											const lat = marker.y;
+											const lng = marker.x;
+											const coords = [lat, lng];
+
+											const isActive = active[id] && active[id].length > 0;
+											const popupContent = `<a href="/graph/${id}" target="_blank">ID: ${id}</a>`;
+											if (id.startsWith('D') || id.startsWith('T')) {
+												const options = isActive ? {
+													color: 'blue',
+													// weight: 1,
+													fill: true,
+													fillColor: 'blue',
+													fillOpacity: 0.8
+												} : {
+													// weight: 1,
+													fillOpacity: 0,
+    												opacity: 0,
+													interactive: true
+												};
+
+												const rect = L.rectangle([
+													[lat - 10, lng - 50],
+													[lat + 10, lng + 50]
+												], options).addTo(mapid);
+												rect.bindPopup(popupContent);
+
+											} else {
+												const options = isActive ? {
+													radius: 20,
+													color: 'blue',
+													fillColor: 'blue',
+													fillOpacity: 0.8
+												} : {
+													radius: 20,
+													fillOpacity: 0,
+    												opacity: 0,
+													interactive: true
+												};
+
+												const circle = L.circle(coords, options).addTo(mapid);
+												circle.bindPopup(popupContent);
+											}
 										});
+									}
 
-										console.log("Coordinate salvate:", markers);
-										fetch('/save_markers', {
-											method: 'POST',
-											headers: {
-												'Content-Type': 'application/json'
-											},
-											body: JSON.stringify(markers)
-										})
-										.then(response => response.json())
-										.then(data => console.log("Markers salvati!", data))
-										.catch(err => console.error("Errore:", err));
-									});
-									
-									
-									
+									loadMarkers();
 								</script>
 								<!-- <span class="image main"><img src="images/pic04.jpg" alt="" /></span> -->
-							</section> 
-							
+							</section>
+
 
 					</div>
 
@@ -95,14 +122,7 @@
 			<script src="{{ url_for('static', filename='assets/js/breakpoints.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='assets/js/util.js') }}"></script>
 			<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
-			<script type="text/javascript">
-			function saveMarkers() {
-				if (markers.length === 0) {
-					alert("Non ci sono marker da salvare.");
-					return;
-				}
-				};
-			</script>
+
 
 	</body>
 </html>

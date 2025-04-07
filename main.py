@@ -1,7 +1,10 @@
-from flask import Flask, request, render_template
+import os
+from dateutil.parser import parse
+from flask import Flask, request, render_template, jsonify
 from google.cloud import firestore
-from json import dumps, loads
+from json import dump, dumps, load, loads, JSONDecodeError
 from datetime import datetime
+
 
 base_url = 'https://pcloudsmarthouse.ew.r.appspot.com/'
 app = Flask(__name__)
@@ -45,7 +48,6 @@ def get_data(s):
     if doc_ref.get().exists:
         #return dumps(db['sensors'][s])
         r = []
-        diz = doc_ref.get().to_dict()['sensors']
         for k, v in diz.items():
             r.append([k, v])
         '''r = []
@@ -67,6 +69,10 @@ def graph(s):
 def map():
     return render_template('map.html')
 
+@app.route('/active_map',methods=['GET'])
+def active_map():
+    return render_template('active_map.html')
+
 @app.route('/sensors',methods=['GET'])
 def sensors():
     s = []
@@ -79,14 +85,49 @@ def sensors():
 @app.route('/active',methods=['GET'])
 def active():
     bs = {}
+    cutoff = datetime.strptime('2010-01-06 12:45:00.000000', '%Y-%m-%d %H:%M:%S.%f')
 
     for entity in db.collection(coll).stream():
         bs[entity.id] = []
         doc_ref = db.collection(coll).document(entity.id)
         diz = doc_ref.get().to_dict()['sensors']
+        filtered = []
+
         for k, v in diz.items():
-            bs[entity.id].append([k, v])
-    return dumps(bs),200
+            ts = datetime.strptime(k, '%Y-%m-%d %H:%M:%S.%f')
+            if ts > cutoff:
+                filtered.append([k, v])
+
+        if filtered:  # SOLO se ha almeno un evento valido
+            bs[entity.id] = filtered
+
+    return jsonify(bs), 200
+
+
+@app.route('/save_markers', methods=['POST'])
+def save_markers():
+    new_data = request.get_json()
+
+    # Se il file esiste, carica i dati attuali
+    if os.path.exists('static/data/markers.json'):
+        with open('static/data/markers.json', 'r') as f:
+            try:
+                existing_data = load(f)
+            except JSONDecodeError:
+                existing_data = []
+    else:
+        existing_data = []
+
+    # Combina i dati: aggiungi quelli nuovi
+    combined_data = existing_data + new_data
+
+    # Salva tutto nel file
+    with open('static/data/markers.json', 'w') as f:
+        dump(combined_data, f, indent=2)
+
+    return jsonify({'status': 'ok'}), 200
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)

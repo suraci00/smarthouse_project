@@ -102,20 +102,11 @@
 							return { v: row[0], f: row[2].split(' - ')[0] }; // Usa solo la data nei ticks
 						});
 						
-						/*formattedData.sort((a, b) => {
-							if (a[0] < b[0]) return -1;
-							if (a[0] > b[0]) return 1;
-							return 0;
-						}); */
 						
 						var datav = google.visualization.arrayToDataTable([
 							['Index', 'Status', {type: 'string', role: 'tooltip'}]
 						].concat(formattedData));
 
-
-						/* var datav = google.visualization.arrayToDataTable([
-							['Date', 'Status']
-						].concat(formattedData)); */
 
 						var view = new google.visualization.DataView(datav);
        					view.setColumns([0, 1, 2]);
@@ -128,7 +119,7 @@
 								gridlines: {count: 10, minSpacing: 20 }, // Aumenta la spaziatura tra i punti
 								slantedText: true, // Inclina le date per maggiore leggibilità
 								slantedTextAngle: 45, // Angolo delle etichette asse X
-								//viewWindow: {max: 100} // Limita a 50 punti visibili 
+								//viewWindow: {max: 100} // Limita a 100 punti visibili 
 								ticks: customTicks
 							},
 							vAxis: {
