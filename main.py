@@ -104,7 +104,7 @@ def active():
     return jsonify(bs), 200
 
 
-@app.route('/save_markers', methods=['POST'])
+@app.route('/save_markers', methods=['GET', 'POST'])
 def save_markers():
     new_data = request.get_json()
 
