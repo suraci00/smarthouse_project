@@ -1,5 +1,4 @@
 import os
-from dateutil.parser import parse
 from flask import Flask, request, render_template, jsonify
 from google.cloud import firestore
 from json import dump, dumps, load, loads, JSONDecodeError
@@ -50,10 +49,7 @@ def get_data(s):
         r = []
         for k, v in diz.items():
             r.append([k, v])
-        '''r = []
-        for doc in db.collection(coll).stream():
-            print(f'{doc.id} --> {doc.to_dict()}')
-            r.append([doc.to_dict()['date'], doc.to_dict()['status']])'''
+
         return dumps(r)
     else:
         return 'sensor not found'
