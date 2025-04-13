@@ -52,6 +52,7 @@
 										if (!id) return;
 
 										const marker = L.marker(e.latlng).addTo(map).bindPopup(`${id}<br>Coords: ${e.latlng.lat.toFixed(0)}, ${e.latlng.lng.toFixed(0)}`).openPopup();
+										// aggiungo oggetto {id, x, y} in fondo alla lista markers
 										markers.push({
 										  id: id,
 										  x: Math.round(e.latlng.lng),
